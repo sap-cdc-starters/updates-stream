@@ -46,7 +46,7 @@ Sync account changes with down stream systems ([see more](changes/account.md))
 
 ## API
 #### Stream registration
-[/accounts.stream.create](https://app.swaggerhub.com/apis/yoav.co/ChangelogQuerySercvice/1.0.0#/create)
+[/accounts.stream.create](https://help.sap.com/docs/SAP_CUSTOMER_DATA_CLOUD/8b8d6fffe113457094a17701f63e3d6a/de20e73c5f0e4df0bc5ab38e2717f494.html?locale=en-US)
 
 use this endpoint to create a registration for account updates stream.
 ###### Api parameters
@@ -60,7 +60,7 @@ use this endpoint to create a registration for account updates stream.
 
 
 #### Stream Scrolling
-[/accounts.stream.read](https://app.swaggerhub.com/apis/yoav.co/ChangelogQuerySercvice/1.0.0#/read)
+[/accounts.stream.read](https://help.sap.com/docs/SAP_CUSTOMER_DATA_CLOUD/8b8d6fffe113457094a17701f63e3d6a/cbf4b101bc1d427da0e257e364da1c36.html?locale=en-US)
 
 use this endpoint to fetch next batch of an existing stream.
 ###### Api parameters
@@ -142,7 +142,7 @@ select * from changelog where type in ('delete', 'move', 'merge')
         apiKey="3_VL0lfWLluGwf2VZ5niQd4Xx6HFf6hSdYHfHoDMJDF2njekgvaEbnxryRAsaXwZK2"
         accessToken={TestUser.accessToken} >
         <GigyaRequest
-            api={"accounts.updates.stream"}
+            api={"accounts.stream.create"}
             params={{query: "select * from changelog limit 40"}}>
             {response =>
                 <GigyaRequest
