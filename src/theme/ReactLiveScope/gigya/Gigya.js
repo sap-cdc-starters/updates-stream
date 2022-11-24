@@ -94,7 +94,6 @@ export function API(props) {
 
 export const GigyaRequest = props => {
     const request = useGigyaApi(props.api, props.params);
-    const [params, setParams] = useState(request);
 
     const children = response =>
         props.children ? props.children(response) : <div/>;
