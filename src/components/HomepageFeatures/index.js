@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles.module.css';
-import {API} from "../updateStreamApi";
+import {UpdatesStreamApi} from "../updateStreamApi";
 
 
 
@@ -9,7 +9,7 @@ export default function HomepageFeatures() {
     <section className={styles.features}>
       <div className="container">
         <div className="row">
-             <API></API>
+             <UpdatesStreamApi></UpdatesStreamApi>
         </div>
       </div>
     </section>

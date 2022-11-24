@@ -16,4 +16,18 @@
   text-decoration: underline;
   cursor: pointer;
 }
-  
+
+.grid-container {
+  display: flex;
+  flex-flow: column;
+  column-gap: 50px;
+
+}
+
+.float {
+  float: right;
+  width: 4em ;
+  height:3rem ;
+
+}
+

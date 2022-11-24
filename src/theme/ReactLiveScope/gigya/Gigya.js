@@ -2,9 +2,11 @@ import React, {useEffect, useState} from "react";
 import Fetch, {useFetch} from "./Fetch";
 import JsonView from "./JsonView";
 import styles from "./styles.module.css";
+import {SafeComponent} from "@site/src/components/SafeComponnet";
 // import {fromEvent} from "rxjs";
 
 export const TestUser = {
+    domain: 'accounts.gigya.com',
     accessToken: 'st2.s.AcbHcsserw.-mNj3OQ36Ye7QWplY3-wS67zMUgWYQgjQQGX8g2o9K857KKRg-PMRx2PU5uck-LLM-G4S9EFbVcXBAanhrlmPw.hU_GGEpgkBGlVNO6M_rKgxKK71UmhlFHQpgZ-eEJWJWFjOHRb_RKxGF-6ZDF6c_PPHztLT1rcE_ardylCYYSGg.sc3'
 };
 const DomainContext = React.createContext('accounts.gigya.com');
@@ -37,9 +39,9 @@ export const GigyaContext = ({
 const GigyaContextConsumer = ({children}) => (
     <DomainContext.Consumer>
         {(domain) => (
-            <AdminContext.Consumer>{({userKey, userSecret}) => (
+            <AdminContext.Consumer>{({userKey, userSecret, accessToken}) => (
                 <SiteContext.Consumer> {(apiKey) =>
-                    children({domain, apiKey, userKey, userSecret})}
+                    children({domain, apiKey, userKey, userSecret, accessToken})}
                 </SiteContext.Consumer>
             )}
             </AdminContext.Consumer>
@@ -48,66 +50,59 @@ const GigyaContextConsumer = ({children}) => (
 );
 
 
-function useGigyaApi(api, params) {
+function useGigyaApi({domain, api, ...params}) {
+    return {url: `https://${domain}/${api}`, params: params};
+
+}
+
+
+function useGigyaContext() {
 
     const domain = React.useContext(DomainContext);
     const admin = React.useContext(AdminContext);
     const {apiKey} = React.useContext(SiteContext);
+    const userKey = {
+        userKey: admin.userKey,
+        secret: admin.userSecret,
+    };
+    return {domain, apiKey, ...userKey, oauth_token: admin.accessToken, format: 'json'};
 
-    const buildRequest = () => {
-        const searchParams = {
-            apiKey: apiKey,
-            userKey: admin.userKey,
-            secret: admin.userSecret,
-            oauth_token: admin.accessToken,
-            format: 'json'
-        };
-
-        Object.keys(params).forEach(k => searchParams[k] = params[k]);
-        return {url: `https://${domain}/${api}`, params: searchParams}
-    }
-
-    const [request, setRequest] = useState(buildRequest);
-
-    useEffect(() => {
-        setRequest(buildRequest())
-    }, [api, params]);
-
-
-    return request;
 
 }
 
-export function API(props) {
+export const GigyaRequest = ({children, ...props}) => {
+    const ctx = useGigyaContext();
+    const [params, setParams] = useState({...ctx, ...props});
+    const request = useGigyaApi(params);
 
-    const [request, setRequest] = useState(props);
-
-    return (
-        <JsonView src={{...request}}
-                  onEdit={({newSrc}) => setRequest(newSrc)}
-                  onDelete={({newSrc}) => setRequest(newSrc)}
-                  onAdd={({newSrc}) => setRequest(newSrc)}/>
-
-
-    );
-}
-
-export const GigyaRequest = props => {
-    const request = useGigyaApi(props.api, props.params);
-
-    const children = response =>
-        props.children ? props.children(response) : <div/>;
+    const safeChildren = response =>
+        children ? children(response) : <div/>;
 
     const {response, fetch, responseView, ResponseConsumer} = useFetch(request);
 
-    return <div>
-        <a onClick={fetch}>Fetch [{props.api}]</a> 
-        <ResponseConsumer>
-            <JsonView src={response} collapsed={false} name="result"/>
-            {response ? children(response) : <div/>}
-        </ResponseConsumer>
-    </div>
+    return <SafeComponent>
+        <div >
 
+            <div style={{padding: '1.5rem' }}>
+                <JsonView
+                    name={params.api}
+                    collapsed={true}
+                    src={params}
+                    onEdit={({newSrc}) => setParams(newSrc)}
+                    onDelete={({newSrc}) => setParams(newSrc)}
+                    onAdd={({newSrc}) => setParams(newSrc)}/>
+
+                <button onClick={fetch} style={{  width: '4em' , height: '2rem' }}> >>  </button>
+            </div>
+
+            <ResponseConsumer class="grid-item" style={{padding: '1.5rem' }}>
+                <JsonView src={response} collapsed={false} name="result" class="grid-item"/>
+                {response ? safeChildren(response) : <div/>}
+            </ResponseConsumer>
+            <br/>
+
+        </div>
+    </SafeComponent>
 
 };
 

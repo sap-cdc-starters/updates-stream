@@ -80,7 +80,7 @@ export function useFetch(options) {
         <JsonView src={response} collapsed={true}/> : <div /> ;
     
     const ResponseConsumer  = ({children})=> 
-        <div >
+        <div style={{background: 'transparent'}} >
             { requestId ? children  : <div />} 
         </div>
         
