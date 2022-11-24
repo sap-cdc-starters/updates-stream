@@ -11,7 +11,7 @@ sidebar_label: UID changes
     * Logging in with the same email (2 social providers)
     * Updating email to existing email (profile update)
     * Manually linking via api.
-* [Progression between different UIDs](docs/journey/progression/index.md)
+* [Progression between different UIDs](/docs/intro/category/journey)
     * Lite with UID A and email a@b.com , UID B sets their email to a@b.com
     * Lite With UID A and email a@b.com, user registers with UID B and email a@b.com 
     
