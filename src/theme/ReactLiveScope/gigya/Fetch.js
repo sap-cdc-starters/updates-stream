@@ -2,17 +2,32 @@ import React, {useEffect, useState} from "react";
 import {fromEvent, of} from "rxjs";
 import {catchError, map, switchMap} from "rxjs/operators"
 import {fromFetch} from 'rxjs/fetch';
-import PropTypes from 'prop-types';
 import JsonView from "./JsonView";
 import styles from './styles.module.css';
-import {AsyncResolver} from 'reenhance-components';
+ 
+function streamFetch({url,params}) {
 
-function streamFetch(url) { 
+    const formBody = [];
+    for (const property in params) {
+        if(params[property]){
+            const encodedKey = encodeURIComponent(property);
+            const encodedValue = encodeURIComponent(params[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+
+        }
+    }
+
     return fromFetch(url, {
         referrerPolicy: "origin",
         credentials:"include",
-        mode:"cors"
-        
+        mode:"cors",
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: formBody.join("&")
+
+
     })
         .pipe(
             switchMap(response => {
@@ -32,9 +47,7 @@ function streamFetch(url) {
             map(response => response));
 }
 
-const AlbumsAsyncResolver =
-    AsyncResolver('query', { resultCount: 0, results: [] });
-
+ 
 const useApiResponse= (url)=>{
     const [request, setRequest] = useState( undefined);
     const [requestId, setRequestId] = useState(0 );
@@ -50,13 +63,13 @@ const useApiResponse= (url)=>{
 
 
  
-export function useFetch(url) {
+export function useFetch(options) {
 
-    const [request, setRequest] = useState( );
+    const [request, setRequest] = useState( options);
     const [requestId, setRequestId] = useState(0 );
 
     const fetch = () => {
-        setRequest(url );
+        setRequest(options );
         setRequestId( requestId+1 );
     };
   
@@ -67,7 +80,7 @@ export function useFetch(url) {
         <JsonView src={response} collapsed={true}/> : <div /> ;
     
     const ResponseConsumer  = ({children})=> 
-        <div>
+        <div >
             { requestId ? children  : <div />} 
         </div>
         
@@ -115,10 +128,7 @@ export function useFetch(url) {
     // });
 }
 
-Fetch.propTypes = {
-    children: PropTypes.element,
-    details: PropTypes.element,
-};
+ 
 
 Fetch.defaultProps = {
     details: null,
@@ -134,11 +144,7 @@ const useObservable = (observable, inputs) => {
 
     return state;
 };
-
-useObservable.propTypes = {
-    children: PropTypes.element,
-    details: PropTypes.element,
-};
+ 
 
 export default Fetch;
 

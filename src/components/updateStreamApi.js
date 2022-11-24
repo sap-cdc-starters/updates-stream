@@ -1,11 +1,8 @@
-import {GigyaContext} from "./gigya";
+import {GigyaRequest, GigyaContext, TestUser} from "../theme/ReactLiveScope/gigya";
 
 export function API() {
     return (
-        <GigyaContext
-            domain="accounts.gigya.com"
-            apiKey="3_VL0lfWLluGwf2VZ5niQd4Xx6HFf6hSdYHfHoDMJDF2njekgvaEbnxryRAsaXwZK2"
-            accessToken={TestUser.accessToken} >
+        <GigyaContext>
             <GigyaRequest
                 api={"accounts.updates.stream"}
                 params={{query: "select * from changelog limit 40"}}>

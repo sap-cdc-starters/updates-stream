@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
 import Fetch, {useFetch} from "./Fetch";
-import buildUrl from "build-url";
 import JsonView from "./JsonView";
 import styles from "./styles.module.css";
 // import {fromEvent} from "rxjs";
 
 export const TestUser = {
-    userKey: 'AIvzv0Pv8IFX',
-    userSecret: 'e6DgUArTi5mGQgaqqAzPdFNYiWaPNaqu',
-    accessToken: 'st2.s.AcbH2Gu9Qg.RYXEQ1_iEed5lAdHbsXrcTumAJ0KVisg9mQNHzlUx2ya2tpC8VzAmjCtqZMneeSd70muPZSVY-rksHM4_O9TDQ.xIMHmMw0e_EUtKQeXO5iQY_iPHki6N4qq0-aMNm_I7Y684JXhplYfQbTTbTM3LY7EHoLlk4vIcta6ZDe23FiFA.sc3'
+    userKey: undefined,
+    userSecret: undefined,
+    accessToken: 'st2.s.AcbHcsserw.-mNj3OQ36Ye7QWplY3-wS67zMUgWYQgjQQGX8g2o9K857KKRg-PMRx2PU5uck-LLM-G4S9EFbVcXBAanhrlmPw.hU_GGEpgkBGlVNO6M_rKgxKK71UmhlFHQpgZ-eEJWJWFjOHRb_RKxGF-6ZDF6c_PPHztLT1rcE_ardylCYYSGg.sc3'
 };
-const DomainContext = React.createContext('accounts.us1-st1.gigya.com');
+const DomainContext = React.createContext('accounts.gigya.com');
 const AdminContext = React.createContext(TestUser);
 
 const SiteContext = React.createContext({
@@ -62,41 +61,40 @@ function useGigyaApi(api, params) {
             apiKey: apiKey,
             userKey: admin.userKey,
             secret: admin.userSecret,
-            oauth_token: admin.accessToken
+            oauth_token: admin.accessToken,
+            format:'json'
         };
 
         Object.keys(params).forEach(k => searchParams[k] = params[k]);
-        return buildUrl(`https://${domain}`, {
-            path: api,
-            queryParams: searchParams
-        });
+        return {url:`https://${domain}/${api}`, params: searchParams}
     }
 
-    const [url, setUrl] = useState(buildRequest);
+    const [request, setRequest] = useState(buildRequest);
 
     useEffect(() => {
-        setUrl(buildRequest())
+        setRequest(buildRequest())
     }, [api, params]);
 
 
-    return {url};
+    return request;
 
 }
 
 
 export const GigyaRequest = props => {
-    const {url} = useGigyaApi(props.api, props.params);
+    const request = useGigyaApi(props.api, props.params);
     const children = response =>
         props.children ? props.children(response) : <div/>;
 
-    const {response, fetch, responseView, ResponseConsumer} = useFetch(url);
+    const {response, fetch, responseView, ResponseConsumer} = useFetch(request);
 
-    return <div>
-        <button onClick={fetch} className={styles.link}>Fetch [{props.api}]</button>
+    return <div >
+        <a onClick={fetch} >Fetch [{props.api}]</a>
         <JsonView src={props.params} collapsed={true} name="params"/>
 
-        <ResponseConsumer>
-            <JsonView src={response} collapsed={true} name="result"/>
+        <ResponseConsumer >
+         
+            <JsonView src={response} collapsed={false} name="result" />
             {response ? children(response) : <div/>}
         </ResponseConsumer>
     </div>
@@ -108,4 +106,4 @@ export const GigyaRequest = props => {
 export default GigyaRequest;
 
 
-
+  

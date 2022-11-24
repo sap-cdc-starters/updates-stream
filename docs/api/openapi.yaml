@@ -1,0 +1,148 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Accounts Stream API
+    url: https://virtserver.swaggerhub.com/yoav.co/ChangelogQuerySercvice/1.0.0
+info:
+  description: accounts stream api
+  version: "1.0.0"
+  title:  Accounts Stream API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: create
+    description: Creates stream of accounts and events
+  - name: read
+    description: Fetches next batch from stream
+paths:
+  /accounts.stream.create:
+    get:
+      tags:
+        - create
+      summary: creates stream
+      operationId: createCursor
+      description: |
+        Get a cursor points the stream with the spacific options
+      parameters:
+        - in: query
+          name: query
+          description: pass an optional search string for looking up in events
+          required: false
+          example: select * from changelog where operation in (merge,move,upsert)
+          schema:
+            type: string
+            default: select * from changelog
+
+
+        - in: query
+          name: since
+          description: Unix time, represent earliest time of events in UTC, limited to now-30d
+          example: 1583769144833
+          required: false
+          schema:
+            type: integer
+            minimum: now-30d
+            maximum: now
+            default: Unix of (now-10m)
+      
+      responses:
+        '200':
+          description: cursor for search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Stream'
+        '400':
+          description: bad input parameter
+  
+  /accounts.stream.read:
+    get:
+      tags:
+        - read
+      summary: fetch next batch
+      description: fetch next batch
+      operationId: read
+      parameters:
+        - in: query
+          name: cusrsorId
+          description: cusrsorId for fetching next results
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          description: results count limit
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 300
+            default: 100
+      
+      
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Batch'
+
+components:
+  schemas:
+    
+    Batch:
+      properties:
+        nextCursorId:
+          type: string
+          example: 'ZHNhc2RmZGFnZHNmZ3NkZ2Zkc2dmZGdkc2dzZGZn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    
+    Stream:
+      type: object
+      properties:
+        streamId:
+          type: string
+          example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+        cursorId:
+          type: string
+          example: 'ZHNhc2RmZGFnZHNmZ3NkZ2Zkc2dmZGdkc2dzZGZn'
+    
+    Event:
+      type: object
+      properties:
+        type:
+          type: string
+          example: merge
+        UID:
+          type: string
+          example: '123'
+        details:
+          type: array
+          items:
+            $ref:  '#/components/schemas/change-details'
+          example: [{"op": "replace","path": "/accountType","value": "full"},{"op": "replace","path": "/uid","value": "456", "oldValue": "123"}]
+    
+    change-details:
+      type: object
+      properties:
+        op:
+          type: string
+          example: replace
+        path:
+          type: string
+          example: /uid
+        value:
+          type: string
+          example: new-uid
+        oldValue:
+          type: string
+          example: old-uid
