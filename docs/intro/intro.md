@@ -139,6 +139,7 @@ select * from changelog where type in ('delete', 'move', 'merge')
 
 ```jsx live
 
+ 
 <GigyaContext {...TestUser} >
   <GigyaRequest
           api={"accounts.stream.create"}

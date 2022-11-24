@@ -60,11 +60,11 @@ function useGigyaApi(api, params) {
             userKey: admin.userKey,
             secret: admin.userSecret,
             oauth_token: admin.accessToken,
-            format:'json'
+            format: 'json'
         };
 
         Object.keys(params).forEach(k => searchParams[k] = params[k]);
-        return {url:`https://${domain}/${api}`, params: searchParams}
+        return {url: `https://${domain}/${api}`, params: searchParams}
     }
 
     const [request, setRequest] = useState(buildRequest);
@@ -78,21 +78,33 @@ function useGigyaApi(api, params) {
 
 }
 
+export function API(props) {
+
+    const [request, setRequest] = useState(props);
+
+    return (
+        <JsonView src={{...request}}
+                  onEdit={({newSrc}) => setRequest(newSrc)}
+                  onDelete={({newSrc}) => setRequest(newSrc)}
+                  onAdd={({newSrc}) => setRequest(newSrc)}/>
+
+
+    );
+}
 
 export const GigyaRequest = props => {
     const request = useGigyaApi(props.api, props.params);
+    const [params, setParams] = useState(request);
+
     const children = response =>
         props.children ? props.children(response) : <div/>;
 
     const {response, fetch, responseView, ResponseConsumer} = useFetch(request);
 
-    return <div >
-        <a onClick={fetch} >Fetch [{props.api}]</a>
-        <JsonView src={props.params} collapsed={true} name="params"/>
-
-        <ResponseConsumer >
-         
-            <JsonView src={response} collapsed={false} name="result" />
+    return <div>
+        <a onClick={fetch}>Fetch [{props.api}]</a> 
+        <ResponseConsumer>
+            <JsonView src={response} collapsed={false} name="result"/>
             {response ? children(response) : <div/>}
         </ResponseConsumer>
     </div>
