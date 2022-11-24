@@ -5,8 +5,6 @@ import styles from "./styles.module.css";
 // import {fromEvent} from "rxjs";
 
 export const TestUser = {
-    userKey: undefined,
-    userSecret: undefined,
     accessToken: 'st2.s.AcbHcsserw.-mNj3OQ36Ye7QWplY3-wS67zMUgWYQgjQQGX8g2o9K857KKRg-PMRx2PU5uck-LLM-G4S9EFbVcXBAanhrlmPw.hU_GGEpgkBGlVNO6M_rKgxKK71UmhlFHQpgZ-eEJWJWFjOHRb_RKxGF-6ZDF6c_PPHztLT1rcE_ardylCYYSGg.sc3'
 };
 const DomainContext = React.createContext('accounts.gigya.com');
