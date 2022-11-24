@@ -1,0 +1,15 @@
+{  
+  "collapsible": false,
+  "collapsed": false,
+  "className": "red",
+  "label": "CDC Stream Updates",
+  "link": {
+    "type": "generated-index",
+    "title": "CDC Stream Updates",
+    "slug": "/category/intro",
+    "image": "/img/manuals.png"
+  },
+
+  "position": 0
+ 
+}

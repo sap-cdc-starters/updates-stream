@@ -1,0 +1,18 @@
+---
+  id: application-token
+  title: Get Application Token  
+  sidebar_label:  Application Token
+---
+                
+```jsx live
+    <GigyaContext
+          domain="accounts.gigya.com"
+          apiKey="3_VL0lfWLluGwf2VZ5niQd4Xx6HFf6hSdYHfHoDMJDF2njekgvaEbnxryRAsaXwZK2"
+          userKey={TestUser.userKey}  
+          userSecret={TestUser.userSecret} >
+               <GigyaRequest
+                        api={"socialize.getToken"}
+                        params={{grant_type: "none"}}/>
+      </GigyaContext>
+                
+ ```
