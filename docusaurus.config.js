@@ -77,7 +77,7 @@ const config = {
             
           },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/sap-cdc-starters/updates-stream',
             label: 'GitHub',
             position: 'right',
           },
@@ -103,8 +103,7 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/sap-cdc-starters/updates-stream',
                 position: 'right',
-                className: 'header-github-logo',
-                label: "GitHub",
+                className: 'header-github-logo', 
 
                 'aria-label': 'GitHub Repo',
 
