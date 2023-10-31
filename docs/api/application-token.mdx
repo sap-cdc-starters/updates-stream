@@ -8,8 +8,7 @@
     <GigyaContext
           domain="accounts.gigya.com"
           apiKey="3_VL0lfWLluGwf2VZ5niQd4Xx6HFf6hSdYHfHoDMJDF2njekgvaEbnxryRAsaXwZK2"
-          userKey={TestUser.userKey}  
-          userSecret={TestUser.userSecret} >
+         {...TestUser} >
                <GigyaRequest
                         api={"socialize.getToken"}
                         grant_type={"none"}/>
